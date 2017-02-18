@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -o errexit -o nounset -o pipefail
+
+mkdir -p /tmp/parallels;
+mount -o loop /home/vagrant/prl-tools-lin.iso /tmp/parallels;
+/tmp/parallels/install --install-unattended-with-deps \
+      || (code="$?"; \
+          echo "Parallels tools installation exited $code, attempting" \
+          "to output /var/log/parallels-tools-install.log"; \
+          cat /var/log/parallels-tools-install.log; \
+          exit $code);
+umount /tmp/parallels;
+rm -rf /tmp/parallels;
+rm /home/vagrant/*.iso
+

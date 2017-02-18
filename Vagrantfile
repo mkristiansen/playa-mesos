@@ -5,7 +5,7 @@
 VAGRANTFILE_API_VERSION = '2'
 
 PM_ROOT = File.dirname(__FILE__)
-PM_CONFIG = File.expand_path(File.join(File.dirname(__FILE__), 'config.json'))
+PM_CONFIG = File.expand_path(File.join(File.dirname(__FILE__), 'config-parallels.json'))
 require_relative File.join(PM_ROOT, 'lib', 'ruby', 'playa_settings')
 pmconf = PlayaSettings.new(PM_CONFIG)
 
@@ -58,9 +58,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.vmx['memsize'] = pmconf.vm_ram
     v.vmx['numvcpus'] = pmconf.vm_cpus
   end
+  config.vm.provider "parallels" do |prl|
+    prl.memory = pmconf.vm_ram
+    prl.cpus = pmconf.vm_cpus
+  end
 
   # Make the project root available to the guest VM.
-  # config.vm.synced_folder '.', '/vagrant'
+  config.vm.synced_folder '.', '/vagrant'
 
   # Only provision if explicitly request with 'provision' or 'up --provision'
   if ARGV.any? { |arg| arg =~ /^(--)?provision$/ }
